@@ -517,6 +517,10 @@ jobs:
           export NAME=$(jq -r ".name" $GITHUB_WORKSPACE/package.json)
           export VERSION=$(jq -r ".version" $GITHUB_WORKSPACE/package.json)
           tar czf $NAME-$VERSION.tgz package
+      - name: Print SHA256 of combined package
+        run: |
+          cd combine/merged
+          sha256sum *.tgz
       - name: Publish combined package
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
