@@ -6,6 +6,7 @@
 #include <CesiumGltf/Model.h>
 
 #include <DotNet/CesiumForUnity/CesiumFeature.h>
+#include <DotNet/UnityEngine/EntityId.h>
 #include <DotNet/System/Array1.h>
 #include <DotNet/System/String.h>
 
@@ -29,11 +30,11 @@ public:
   ~CesiumMetadataImpl();
 
   void addMetadata(
-      int32_t instanceID,
+      ::DotNet::UnityEngine::EntityId entityID,
       const CesiumGltf::Model* pModel,
       const CesiumGltf::MeshPrimitive* pPrimitive);
 
-  void removeMetadata(int32_t instanceID);
+  void removeMetadata(::DotNet::UnityEngine::EntityId entityID);
 
   DotNet::System::Array1<DotNet::CesiumForUnity::CesiumFeature> GetFeatures(
       const DotNet::CesiumForUnity::CesiumMetadata& metadata,
@@ -42,7 +43,8 @@ public:
 
 private:
   std::unordered_map<
-      int32_t,
+      //::DotNet::UnityEngine::EntityId,
+      uint64_t, // Using EntityId has the key has compile errors from xhash.
       std::pair<const CesiumGltf::Model*, const CesiumGltf::MeshPrimitive*>>
       _pModels;
 };

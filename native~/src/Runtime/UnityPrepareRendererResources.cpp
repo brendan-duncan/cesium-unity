@@ -1006,7 +1006,7 @@ UnityPrepareRendererResources::prepareInLoadThread(
               // Baking physics meshes takes awhile, so do that in a
               // worker thread.
               const std::int32_t len = meshes.Length();
-              std::vector<std::int32_t> instanceIDs;
+              std::vector<::DotNet::UnityEngine::EntityId> instanceIDs;
               for (int32_t i = 0; i < len; ++i) {
                 // Don't attempt to bake a physics mesh from a point cloud or
                 // from an invalid triangle mesh.
@@ -1015,7 +1015,7 @@ UnityPrepareRendererResources::prepareInLoadThread(
                   continue;
                 }
 
-                instanceIDs.push_back(meshes[i].GetInstanceID());
+                instanceIDs.push_back(meshes[i].GetEntityId());
               }
 
               if (instanceIDs.size() > 0) {
@@ -1028,8 +1028,8 @@ UnityPrepareRendererResources::prepareInLoadThread(
                     [workerResult = std::move(workerResult),
                      instanceIDs = std::move(instanceIDs),
                      meshes = std::move(meshes)]() mutable {
-                      for (std::int32_t instanceID : instanceIDs) {
-                        UnityEngine::Physics::BakeMesh(instanceID, false);
+                      for (::DotNet::UnityEngine::EntityId entityID : instanceIDs) {
+                        UnityEngine::Physics::BakeMesh(entityID, false);
                       }
 
                       LoadThreadResult* pResult = new LoadThreadResult{
@@ -1630,7 +1630,7 @@ void* UnityPrepareRendererResources::prepareInMainThread(
         // For backwards compatibility.
         if (metadataComponent != nullptr) {
           metadataComponent.NativeImplementation().addMetadata(
-              primitiveGameObject.transform().GetInstanceID(),
+              primitiveGameObject.transform().GetEntityId(),
               &gltf,
               &primitive);
         } else {
@@ -1682,7 +1682,7 @@ void freePrimitiveGameObject(
   // Kept for backwards compatibility.
   if (metadataComponent != nullptr) {
     metadataComponent.NativeImplementation().removeMetadata(
-        primitiveGameObject.transform().GetInstanceID());
+        primitiveGameObject.transform().GetEntityId());
   } else {
     freePrimitiveFeatures(primitiveGameObject);
   }

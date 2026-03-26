@@ -61,6 +61,13 @@ namespace CesiumForUnity
         {
             Camera c = Camera.main;
 
+            EntityId entityId = c.GetEntityId();
+            EntityId noneId = EntityId.None;
+            bool isValid = entityId.IsValid();
+            int hashCode = entityId.GetHashCode();
+            ulong ulongValue = EntityId.ToULong(entityId);
+            EntityId fromUlong = EntityId.FromULong(ulongValue);
+
             Transform t = c.transform;
             Vector3 u = t.up;
             Vector3 f = t.forward;
@@ -142,7 +149,6 @@ namespace CesiumForUnity
             mesh.SetIndices(new NativeArray<int>(), MeshTopology.Triangles, 0, true, 0);
             mesh.RecalculateBounds();
             int vertexCount = mesh.vertexCount;
-            int instanceID = mesh.GetInstanceID();
 
             Vector3[] vertices = mesh.vertices;
             Vector3 vertex = vertices[0];
@@ -521,7 +527,7 @@ namespace CesiumForUnity
 
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray, meshes, MeshUpdateFlags.Default);
 
-            Physics.BakeMesh(mesh.GetInstanceID(), false);
+            Physics.BakeMesh(mesh.GetEntityId(), false);
 
             CesiumCreditComponent creditComponent = new CesiumCreditComponent("text", "link", -1);
             List<CesiumCreditComponent> creditComponents = new List<CesiumCreditComponent>();

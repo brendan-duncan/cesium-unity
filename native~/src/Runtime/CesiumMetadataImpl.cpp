@@ -58,14 +58,16 @@ CesiumMetadataImpl::CesiumMetadataImpl(
 CesiumMetadataImpl::~CesiumMetadataImpl() {}
 
 void CesiumMetadataImpl::addMetadata(
-    int32_t instanceID,
+    ::DotNet::UnityEngine::EntityId entityID,
     const CesiumGltf::Model* pModel,
     const CesiumGltf::MeshPrimitive* pPrimitive) {
-  this->_pModels.insert({instanceID, {pModel, pPrimitive}});
+  //this->_pModels.insert({entityID, {pModel, pPrimitive}});
+  this->_pModels.insert({::DotNet::UnityEngine::EntityId::ToULong(entityID), {pModel, pPrimitive}});
 }
 
-void CesiumMetadataImpl::removeMetadata(int32_t instanceID) {
-  auto find = this->_pModels.find(instanceID);
+void CesiumMetadataImpl::removeMetadata(::DotNet::UnityEngine::EntityId entityID) {
+  //auto find = this->_pModels.find(entityID);
+  auto find = this->_pModels.find(::DotNet::UnityEngine::EntityId::ToULong(entityID));
   if (find != this->_pModels.end()) {
     this->_pModels.erase(find);
   }
@@ -78,7 +80,8 @@ CesiumForUnityNative::CesiumMetadataImpl::GetFeatures(
     const DotNet::CesiumForUnity::CesiumMetadata& metadata,
     const DotNet::UnityEngine::Transform& transform,
     int triangleIndex) {
-  auto find = this->_pModels.find(transform.GetInstanceID());
+  //auto find = this->_pModels.find(transform.GetEntityId());
+  auto find = this->_pModels.find(::DotNet::UnityEngine::EntityId::ToULong(transform.GetEntityId()));
   if (find == this->_pModels.end()) {
     return DotNet::System::Array1<DotNet::CesiumForUnity::CesiumFeature>(0);
   }
